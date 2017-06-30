@@ -19,7 +19,7 @@ Contract.make {
 			contentType(applicationJson())
 		}
 		body (
-		  value: $(regex('.+')),
+		  value: $(regex('[a-z]+')),
 		  timeSet: $(regex("[0-9]{2}:[0-9]{2}:[0-9]{2}.[0-9]{3}"))
 		)
 	}

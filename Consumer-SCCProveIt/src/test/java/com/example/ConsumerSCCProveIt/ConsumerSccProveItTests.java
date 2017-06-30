@@ -80,7 +80,7 @@ public class ConsumerSccProveItTests {
     }
 
     @Test
-    public void testPostForObjectPOJO() throws JSONException {
+    public void testPostForObjectPOJOCorrectTimeFormat() throws JSONException {
 
         JSONObject request = new JSONObject();
         request.put("value", "booyah");
@@ -89,9 +89,26 @@ public class ConsumerSccProveItTests {
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<String> httpEntity = new HttpEntity<String>(request.toString(), headers);
 
-        ResponseEntity<ConsumerEntity> response = new RestTemplate().exchange(baseUrl + "/createEntity", HttpMethod.POST,
-                httpEntity, ConsumerEntity.class);
+        ResponseEntity<ConsumerEntity> response = new RestTemplate().exchange(baseUrl + "/createEntity",
+                HttpMethod.POST, httpEntity, ConsumerEntity.class);
 
-        assertThat(response.getBody().getTime(), RegexMatcher.matchesRegex("[0-9]{2}:[0-9]{2}:[0-9]{2}.[0-9]{3}"));
+        assertThat(response.getBody().getTime(), RegexMatcher.matchesRegex("[0-9]{2}:[0-9]{2}:[0-9]{2}.[0-9]+"));
+    }
+
+    @Test
+    public void testPostForObjectPOJOValueIsLetters() throws JSONException {
+
+        JSONObject request = new JSONObject();
+        request.put("value", "booyah");
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<String> httpEntity = new HttpEntity<String>(request.toString(), headers);
+
+        ResponseEntity<ConsumerEntity> response = new RestTemplate().exchange(baseUrl + "/createEntity",
+                HttpMethod.POST, httpEntity, ConsumerEntity.class);
+
+        assertThat(response.getBody().getValue(), RegexMatcher.matchesRegex("[a-z]+"));
+        log.info("##### /createEntity actually returned: " + response.getBody().getValue());
     }
 }
